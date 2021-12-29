@@ -1,47 +1,85 @@
-import os.path
+import os.path as p
 import PySimpleGUI as sg
 
-VERSION = "1.0.1"
+VERSION = "0.1/GUI"
 title = str("IE CLUB EDITION " + VERSION)
+# windowSize = (150, 300)
+windowSize = (0, 0)  # Make it fit
+sg.ChangeLookAndFeel("DarkBrown5")
 
-#sg.ChangeLookAndFeel("black")
-
-layout_names = [
-    [sg.Text("Name1", size=(30, 1)), sg.Text("Name2", size=(30, 1))],
-    [sg.Input("3", size=(30, 1)), sg.Input("4", size=(30, 1))],
-]
 layout_name1 = [
-    [sg.Input("3", size=(30, 1))],
+    [sg.Input(key="-name1-", size=(30, 1))],
 ]
 layout_name2 = [
-    [sg.Input("3", size=(30, 1))],
+    [sg.Input(key="-name2-", size=(30, 1))],
 ]
 layout_names = [
     [
-        sg.Frame("Name 1", layout_name1, element_justification="left", border_width=0),
-        sg.Frame("Name 2", layout_name2, element_justification="left", border_width=0),
+        sg.Frame(
+            "Left Player", layout_name1, element_justification="left", border_width=0
+        ),sg.Button(key="-Swap-",button_text="<->",tooltip="Swap the names"),
+        sg.Frame(
+            "Right Player", layout_name2, element_justification="left", border_width=0
+        ),
     ],
-    [sg.Button("Update")],
+    [],
 ]
 layout = [
-    [sg.Frame("Names", layout_names,title_location='n',font=('',15))],
+    [sg.Frame("Names", layout_names, title_location="n", font=("", 15))],
     [],
     # [sg.Button("Close")],
     [sg.B("Start A Thread"), sg.B("Dummy"), sg.Button("Exit2")],
-    [sg.Exit()],
+    [sg.OK(), sg.Cancel(), sg.B("Apply")],
 ]
-size = (150, 300)
 window = sg.Window(
-    title=title, layout=layout, margins=size, icon=r"icon/ie logo only ( dark ).ico"
+    title=title,
+    layout=layout,
+    margins=windowSize,
+    icon=r"icon/ie logo only ( dark ).ico",
 )
+
+
+def save(values):
+    print(
+        "Saving in", f'({p.abspath("")})'
+    )  # hehe, clever right? although still useless but wtvr...
+    # Actully save stuff
+    with open("Name1.txt", "w+") as n1, open("Name2.txt", "w+") as n2:
+        print(f'{values=}')
+        n1.write(values["-name1-"])
+        n2.write(values["-name2-"])
+
+
+# initilize
+def initialize():
+    with open("Name1.txt", "r") as n1, open("Name2.txt", "r") as n2:
+        window["-name1-"].update(n1.read())
+        window["-name2-"].update(n2.read())
+
+event, values = window.read(timeout=100)
+initialize()
 while True:
     event, values = window.read()
     # End program if user closes window or
-    # presses the OK button
-    if event is "Update":
-        # TODO change names
+    # presses the Exit button
+    if event == "-Swap-":
+        # Swap names
+        tmp = values["-name1-"]
+        values["-name1-"] = values["-name2-"]
+        values["-name2-"] = tmp
+        save(values)
+        initialize()
         print("Updated")
-    if event in ("Exit", sg.WIN_CLOSED):
+
+    # TODO edit apply functionality to only apply when there are changes.
+    # + "OK" functions as Cancel if no changes
+    if event in ("OK", "Apply"):
+        save(values)
+        print("Saved!")
+
+    if event in ("Cancel", "OK", sg.WIN_CLOSED):
+        if event != "OK":
+            print("why? what a pain...")
         break
 
 window.close()
@@ -54,7 +92,7 @@ def split(word):
 
 userInput = ""
 print(
-    "Program Started!\nIE CLUB EDITION 1.0.1\ns -->  Set Scores\nc --> Set Contestants\nf --> Flip Names and Scores\nb --> Set Current Bracket\ne --> Exit\nh --> help"
+    "Program Started!\nIE CLUB EDITION\ns -->  Set Scores\nc --> Set Contestants\nf --> Flip Names and Scores\nb --> Set Current Bracket\ne --> Exit\nh --> help"
 )
 while userInput.lower() != "e":
     print("__________________________")
