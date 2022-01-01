@@ -9,15 +9,38 @@ sg.ChangeLookAndFeel("DarkBrown5")
 
 layout_name1 = [
     [sg.Input(key="-name1-", size=(30, 1))],
+    [
+        sg.Text("Score"),
+        sg.Button(
+            key="-left_score_m-",
+            pad=(0, 0),
+            button_text="-",
+            tooltip="Decrease Score",
+            size=(2, 1),
+        ),
+        sg.InputText(0, size=(10, 1), pad=(0, 0)),
+        sg.Button(
+            key="-left_score_p-",
+            pad=(0, 0),
+            button_text="+",
+            tooltip="Increase Score",
+            size=(2, 1),
+        ),
+    ],
 ]
 layout_name2 = [
     [sg.Input(key="-name2-", size=(30, 1))],
+    [
+        sg.Text("Score"),
+        sg.Spin([i for i in range(0, 100)], initial_value=0, size=(10, 1)),
+    ],
 ]
 layout_names = [
     [
         sg.Frame(
             "Left Player", layout_name1, element_justification="left", border_width=0
-        ),sg.Button(key="-Swap-",button_text="<->",tooltip="Swap the names"),
+        ),
+        sg.Button(key="-Swap-", button_text="<->", tooltip="Swap the names"),
         sg.Frame(
             "Right Player", layout_name2, element_justification="left", border_width=0
         ),
@@ -39,25 +62,26 @@ window = sg.Window(
 )
 
 
-def save(values):
+def save_names(values):
     print(
         "Saving in", f'({p.abspath("")})'
     )  # hehe, clever right? although still useless but wtvr...
     # Actully save stuff
     with open("Name1.txt", "w+") as n1, open("Name2.txt", "w+") as n2:
-        print(f'{values=}')
+        print(f"{values=}")
         n1.write(values["-name1-"])
         n2.write(values["-name2-"])
 
 
 # initilize
-def initialize():
+def initialize_text_fields():
     with open("Name1.txt", "r") as n1, open("Name2.txt", "r") as n2:
         window["-name1-"].update(n1.read())
         window["-name2-"].update(n2.read())
 
+
 event, values = window.read(timeout=100)
-initialize()
+initialize_text_fields()
 while True:
     event, values = window.read()
     # End program if user closes window or
@@ -67,20 +91,21 @@ while True:
         tmp = values["-name1-"]
         values["-name1-"] = values["-name2-"]
         values["-name2-"] = tmp
-        save(values)
-        initialize()
+        save_names(values)
+        initialize_text_fields()
         print("Updated")
 
     # TODO edit apply functionality to only apply when there are changes.
     # + "OK" functions as Cancel if no changes
     if event in ("OK", "Apply"):
-        save(values)
+        save_names(values)
         print("Saved!")
 
     if event in ("Cancel", "OK", sg.WIN_CLOSED):
         if event != "OK":
             print("why? what a pain...")
         break
+
 
 window.close()
 exit()
