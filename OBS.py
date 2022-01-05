@@ -1,23 +1,41 @@
 import os.path as p
+import os
 import PySimpleGUI as sg
+import pyglet
+
+import platform
+import ctypes
+
+if platform.system() == "Windows":
+    ctypes.windll.shcore.SetProcessDpiAwareness(True) # Fix Bug on Windows when using multiple screens with different scaling
 
 VERSION = "0.1/GUI"
 title = str("IE CLUB EDITION " + VERSION)
 # windowSize = (150, 300)
 windowSize = (0, 0)  # Make it fit
 # sg.ChangeLookAndFeel("DarkBrown5")
+# "COLOR_LIST": ["#EEEEEE", "#CACACA", "#797979", "#444444"],
+
+for fontfile in os.listdir(r'.\Fonts'):
+    if fontfile.endswith('.ttf'):
+        pyglet.font.add_file(str(r'./Fonts/'+fontfile))
+
+
+#pyglet.font.add_file(r".\Fonts\Roboto*.ttf")
+
 sg.LOOK_AND_FEEL_TABLE["IECLUB Dark"] = {
-    "BACKGROUND": "#EEEEEE",
-    "TEXT": "#000",
-    "INPUT": "#F0F",
-    "TEXT_INPUT": "#000",
-    "SCROLL": "#5EA7FF",
-    "BUTTON": ("#eae", "#205490"),  # text color on bg color
-    "BUTTON": ("#eee", "#D74949"),  # text color on bg color
-    "PROGRESS": ("#01826B", "#D0D0D0"),
+    "BACKGROUND": "#444444",
+    "TEXT": "#EEEEEE",
+    "INPUT": "#797979",
+    "TEXT_INPUT": "#EEEEEE",
+    "SCROLL": "#CACACA",
+    "BUTTON": ("#EEEEEE", "#D74949"),  # text color on bg color
+    "PROGRESS": ("#000", "#000"),
     "BORDER": 0,
     "SLIDER_DEPTH": 0,
     "PROGRESS_DEPTH": 0,
+    "COLOR_LIST": ["#EEEEEE", "#CACACA", "#797979", "#444444", "#D74949"],
+    "DESCRIPTION": ["Brown", "Red", "Yellow", "Warm"],
     "ACCENT1": "#444444",
     "ACCENT2": "#797979",
     "ACCENT3": "#CACACA",
@@ -29,14 +47,18 @@ sg.LOOK_AND_FEEL_TABLE["DarkBrown511"] = {
     "TEXT_INPUT": "#000000",
     "SCROLL": "#e2bf81",
     "BUTTON": ("#3c1b1f", "#f6e1b5"),
-    #"PROGRESS": ('#000000', '#000000'),
-    "BORDER": 1,
+    "PROGRESS": ("#01826B", "#D0D0D0"),
+    "BORDER": 0,
     "SLIDER_DEPTH": 0,
     "PROGRESS_DEPTH": 0,
-    #"COLOR_LIST": ["#3c1b1f", "#b21e4b", "#e2bf81", "#f6e1b5"],
-    #"DESCRIPTION": ["Brown", "Red", "Yellow", "Warm"],
-},
-sg.theme("DarkBrown511")
+    # "COLOR_LIST": ["#3c1b1f", "#b21e4b", "#e2bf81", "#f6e1b5"],
+    # "DESCRIPTION": ["Brown", "Red", "Yellow", "Warm"],
+    "ACCENT1": "#444444",
+    "ACCENT2": "#797979",
+    "ACCENT3": "#CACACA",
+
+}
+sg.theme("IECLUB Dark")
 layout_name1 = [
     [sg.Input(key="-name1-", size=(30, 1))],
     [
@@ -68,11 +90,11 @@ layout_name2 = [
 layout_names = [
     [
         sg.Frame(
-            "Left Player", layout_name1, element_justification="left", border_width=0
+            "Left Player", layout_name1, element_justification="left", border_width=0, font=('Roboto', 101),
         ),
         sg.Button(key="-Swap-", button_text="<->", tooltip="Swap the names"),
         sg.Frame(
-            "Right Player", layout_name2, element_justification="left", border_width=0
+            "Right Player", layout_name2, element_justification="left", border_width=0, font=('Arial', 11),
         ),
     ],
     [],
@@ -172,7 +194,7 @@ while userInput.lower() != "e":
         nameInput = input("Enter Contestant 1's Name:\n")
         a = nameInput.find(" ")
         if nameInput[a] == " ":
-            nameInput = nameInput[0:a] + "   " + nameInput[a : (len(nameInput))]
+            nameInput = nameInput[0:a] + "   " + nameInput[a: (len(nameInput))]
         name1 = open("Name1.txt", "w")
         name1.write(nameInput)
         name1.close()
@@ -180,7 +202,7 @@ while userInput.lower() != "e":
         nameInput = input("Enter Contestant 2's Name:\n")
         a = nameInput.find(" ")
         if nameInput[a] == " ":
-            nameInput = nameInput[0:a] + "   " + nameInput[a : (len(nameInput))]
+            nameInput = nameInput[0:a] + "   " + nameInput[a: (len(nameInput))]
         name2 = open("Name2.txt", "w")
         name2.write(nameInput)
         name2.close()
@@ -196,7 +218,8 @@ while userInput.lower() != "e":
         a = bracketInput.find(" ")
         if bracketInput[a] == " ":
             bracketInput = (
-                bracketInput[0:a] + "   " + bracketInput[a : (len(bracketInput))]
+                bracketInput[0:a] + "   " +
+                bracketInput[a: (len(bracketInput))]
             )
         bracket.write(bracketInput)
         bracket.close()
