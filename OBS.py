@@ -5,8 +5,24 @@ VERSION = "0.1/GUI"
 title = str("IE CLUB EDITION " + VERSION)
 # windowSize = (150, 300)
 windowSize = (0, 0)  # Make it fit
-sg.ChangeLookAndFeel("DarkBrown5")
-
+#sg.ChangeLookAndFeel("DarkBrown5")
+sg.LOOK_AND_FEEL_TABLE["ill13"] = {
+    "BACKGROUND": "#fff",
+    "TEXT": "#000",
+    "INPUT": "#F0F0F0",
+    "TEXT_INPUT": "#000",
+    "SCROLL": "#5EA7FF",
+    "BUTTON": ("#eee", "#2196F3"),  # text color on bg color
+    "BUTTON": ("#efe", "#205490"),  # text color on bg color
+    "PROGRESS": ("#01826B", "#D0D0D0"),
+    "BORDER": 0,
+    "SLIDER_DEPTH": 0,
+    "PROGRESS_DEPTH": 0,
+    "ACCENT1": "#4285f4",
+    "ACCENT2": "#FF5C93",
+    "ACCENT3": "#C5003C",
+}
+sg.theme("ill13")
 layout_name1 = [
     [sg.Input(key="-name1-", size=(30, 1))],
     [
@@ -142,7 +158,7 @@ while userInput.lower() != "e":
         nameInput = input("Enter Contestant 1's Name:\n")
         a = nameInput.find(" ")
         if nameInput[a] == " ":
-            nameInput = nameInput[0:a] + "   " + nameInput[a : (len(nameInput))]
+            nameInput = nameInput[0:a] + "   " + nameInput[a: (len(nameInput))]
         name1 = open("Name1.txt", "w")
         name1.write(nameInput)
         name1.close()
@@ -150,7 +166,7 @@ while userInput.lower() != "e":
         nameInput = input("Enter Contestant 2's Name:\n")
         a = nameInput.find(" ")
         if nameInput[a] == " ":
-            nameInput = nameInput[0:a] + "   " + nameInput[a : (len(nameInput))]
+            nameInput = nameInput[0:a] + "   " + nameInput[a: (len(nameInput))]
         name2 = open("Name2.txt", "w")
         name2.write(nameInput)
         name2.close()
@@ -166,7 +182,8 @@ while userInput.lower() != "e":
         a = bracketInput.find(" ")
         if bracketInput[a] == " ":
             bracketInput = (
-                bracketInput[0:a] + "   " + bracketInput[a : (len(bracketInput))]
+                bracketInput[0:a] + "   " +
+                bracketInput[a: (len(bracketInput))]
             )
         bracket.write(bracketInput)
         bracket.close()
