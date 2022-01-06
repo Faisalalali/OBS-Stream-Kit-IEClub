@@ -7,22 +7,36 @@ import platform
 import ctypes
 
 if platform.system() == "Windows":
-    ctypes.windll.shcore.SetProcessDpiAwareness(True) # Fix Bug on Windows when using multiple screens with different scaling
+    ctypes.windll.shcore.SetProcessDpiAwareness(
+        True
+    )  # Fix Bug on Windows when using multiple screens with different scaling
 
 VERSION = "0.1/GUI"
 title = str("IE CLUB EDITION " + VERSION)
 # windowSize = (150, 300)
 windowSize = (0, 0)  # Make it fit
 # sg.ChangeLookAndFeel("DarkBrown5")
-# "COLOR_LIST": ["#EEEEEE", "#CACACA", "#797979", "#444444"],
+# "COLOR_LIST": ["#EEEEEE", "#CACACA", "#797979", "#444444", "#D74949"],
 
-for fontfile in os.listdir(r'.\Fonts'):
-    if fontfile.endswith('.ttf'):
-        pyglet.font.add_file(str(r'./Fonts/'+fontfile))
+## Colors
+BACKGROUND_COLOR = '#040404'
+FORGROUND_COLOR = '#1E1E1E'
+TEXT_COLOR = '#EEEEEE'
 
 
-#pyglet.font.add_file(r".\Fonts\Roboto*.ttf")
+## Add all font files in the '.\Fonts\' directory.
+for fontfile in os.listdir(r".\Fonts"):
+    if fontfile.endswith(".ttf"):
+        pyglet.font.add_file(str(r"./Fonts/" + fontfile))
 
+## Font Styles
+TITLE_FONT = ("Roboto", 15)
+HEADING1_FONT = ("Roboto Light", 12)
+HEADING2_FONT = ("Roboto Light", 10)
+SYMBOLS_FONT = ("Roboto Black", 10)
+
+
+## Themes and colors
 sg.LOOK_AND_FEEL_TABLE["IECLUB Dark"] = {
     "BACKGROUND": "#444444",
     "TEXT": "#EEEEEE",
@@ -56,51 +70,60 @@ sg.LOOK_AND_FEEL_TABLE["DarkBrown511"] = {
     "ACCENT1": "#444444",
     "ACCENT2": "#797979",
     "ACCENT3": "#CACACA",
-
 }
 sg.theme("IECLUB Dark")
 layout_name1 = [
     [sg.Input(key="-name1-", size=(30, 1))],
     [
-        sg.Text("Score"),
+        sg.Text("Score", font=HEADING2_FONT),
         sg.Button(
             key="-left_score_m-",
             pad=(0, 0),
             button_text="-",
             tooltip="Decrease Score",
-            size=(2, 1),
+            size=(3, 1),
+            font=SYMBOLS_FONT,
         ),
-        sg.InputText(0, size=(10, 1), pad=(0, 0)),
+        sg.InputText(0, size=(5, 1), pad=(0, 0), font=TITLE_FONT, justification="c",background_color="#3c1b1f"),
         sg.Button(
             key="-left_score_p-",
             pad=(0, 0),
             button_text="+",
             tooltip="Increase Score",
-            size=(2, 1),
+            size=(3, 1),
+            font=SYMBOLS_FONT,
         ),
     ],
 ]
 layout_name2 = [
     [sg.Input(key="-name2-", size=(30, 1))],
     [
-        sg.Text("Score"),
+        sg.Text("Score", font=HEADING2_FONT),
         sg.Spin([i for i in range(0, 100)], initial_value=0, size=(10, 1)),
     ],
 ]
 layout_names = [
     [
         sg.Frame(
-            "Left Player", layout_name1, element_justification="left", border_width=0, font=('Roboto', 101),
+            "Left Player",
+            layout_name1,
+            element_justification="left",
+            border_width=0,
+            font=HEADING1_FONT,
         ),
         sg.Button(key="-Swap-", button_text="<->", tooltip="Swap the names"),
         sg.Frame(
-            "Right Player", layout_name2, element_justification="left", border_width=0, font=('Arial', 11),
+            "Right Player",
+            layout_name2,
+            element_justification="left",
+            border_width=0,
+            font=HEADING1_FONT,
         ),
     ],
     [],
 ]
 layout = [
-    [sg.Frame("Names", layout_names, title_location="n", font=("", 15))],
+    [sg.Frame("Names", layout_names, title_location="n", font=TITLE_FONT)],
     [],
     # [sg.Button("Close")],
     [sg.B("Start A Thread"), sg.B("Dummy"), sg.Button("Exit2")],
@@ -194,7 +217,7 @@ while userInput.lower() != "e":
         nameInput = input("Enter Contestant 1's Name:\n")
         a = nameInput.find(" ")
         if nameInput[a] == " ":
-            nameInput = nameInput[0:a] + "   " + nameInput[a: (len(nameInput))]
+            nameInput = nameInput[0:a] + "   " + nameInput[a : (len(nameInput))]
         name1 = open("Name1.txt", "w")
         name1.write(nameInput)
         name1.close()
@@ -202,7 +225,7 @@ while userInput.lower() != "e":
         nameInput = input("Enter Contestant 2's Name:\n")
         a = nameInput.find(" ")
         if nameInput[a] == " ":
-            nameInput = nameInput[0:a] + "   " + nameInput[a: (len(nameInput))]
+            nameInput = nameInput[0:a] + "   " + nameInput[a : (len(nameInput))]
         name2 = open("Name2.txt", "w")
         name2.write(nameInput)
         name2.close()
@@ -218,8 +241,7 @@ while userInput.lower() != "e":
         a = bracketInput.find(" ")
         if bracketInput[a] == " ":
             bracketInput = (
-                bracketInput[0:a] + "   " +
-                bracketInput[a: (len(bracketInput))]
+                bracketInput[0:a] + "   " + bracketInput[a : (len(bracketInput))]
             )
         bracket.write(bracketInput)
         bracket.close()
